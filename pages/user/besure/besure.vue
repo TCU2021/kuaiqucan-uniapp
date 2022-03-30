@@ -10,7 +10,7 @@
 			</view>
 			<view class="texts" v-else>
 				<view class="title">
-					您暂时没有订单
+					您暂时没有此处的订单
 				</view>
 			</view>
 			<view class="buttons">
@@ -36,6 +36,8 @@
 				data: {
 					telephone: option.telephone,
 					location: option.location,
+					// telephone:'123456',
+					// location:'位置1'
 				},
 				success: (res) => {
 					console.log('开柜订单请求成功', res.data)

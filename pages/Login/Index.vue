@@ -1,5 +1,6 @@
 <template>
 	<view class='background'>
+		<u-toast ref="uToast" />
 		<view class="logo">
 			<image src="../../assets/logo.png" mode="aspectFit" class="logo"></image>
 		</view>
@@ -49,10 +50,21 @@
 									console.log('登录转跳首页失败', e)
 								}
 							})
+						} else {
+							that.$refs.uToast.show({
+								title: '登录失败',
+								type: 'warning',
+								position: 'top',
+							})
 						}
 					},
 					fail: (err) => {
 						console.error('请求失败', err)
+						that.$refs.uToast.show({
+							title: '登录失败',
+							type: 'warning',
+							position: 'top',
+						})
 					}
 				});
 			}

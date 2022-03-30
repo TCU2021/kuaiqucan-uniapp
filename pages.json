@@ -52,21 +52,23 @@
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
-	},
-	"tabBar": {
-		"color": "#000000",
-		"selectedColor": "#00aaff",
-		"borderStyle": "black",
-		"backgroundColor": "#ffffff",
-		"list": [{
-			"pagePath": "pages/index/index",
-			"text": "首页"
-		}, {
-			"pagePath": "pages/user/myInfo/myInfo",
-			"text": "我的"
-		}, {
-			"pagePath": "pages/test/test",
-			"text": "test"
-		}]
 	}
+	// "tabBar": {
+	// 	"color": "#000000",
+	// 	"selectedColor": "#00aaff",
+	// 	"borderStyle": "black",
+	// 	"backgroundColor": "#ffffff",
+	// 	"list": [{
+	// 		"pagePath": "pages/index/index",
+	// 		"text": "首页"
+	// 	}
+		// , {
+		// 	"pagePath": "pages/user/myInfo/myInfo",
+		// 	"text": "我的"
+		// }, {
+		// 	"pagePath": "pages/test/test",
+		// 	"text": "test"
+		// },
+	// 	]
+	// }
 }
