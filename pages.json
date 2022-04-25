@@ -44,7 +44,12 @@
 				"navigationBarTitleText": "test",
 				"enablePullDownRefresh": false
 			}
-
+		}, {
+			"path": "pages/Register/Index",
+			"style": {
+				"navigationBarTitleText": "注册",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"globalStyle": {

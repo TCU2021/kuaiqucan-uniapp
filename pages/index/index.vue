@@ -1,11 +1,17 @@
 <template>
-	<view class="bar-bg">
-		<view class="hello">
-			<view class="title">欢迎你：{{ user.username }}</view>
-			<view class="title">当前待取餐：</view>
+	<view class="bar-bg" v-if="isLoad.window">
+		<view class="header">
+			<view class="hello">
+				<view class="title">欢迎你：{{ user.username }}</view>
+				<view class="title">当前待取餐：</view>
+			</view>
+			<view class="buttons">
+				<u-button @click="logout">退出登录</u-button>
+			</view>
 		</view>
 		<view class="todo bg-border">
-			<view class="content" v-if="!ordersLoading&&orders.length>0">
+			<u-loading mode="circle" color="#0184ff" v-if="ordersLoading"></u-loading>
+			<view class="content" v-else-if="orders.length>0">
 				<swiper class="swiper" @change="changeCurrentPage">
 					<swiper-item class="swiperItem" v-for="(item,index) in orders">
 						<view class="text">订单名称：{{item.name}}</view>
@@ -18,7 +24,6 @@
 					{{currentPage+1}}/{{orders.length}}
 				</view>
 			</view>
-			<u-loading mode="circle" color="#0184ff" v-else></u-loading>
 			<view class="title" v-else>
 				您暂无订单
 			</view>
@@ -41,23 +46,14 @@
 	} from '../../js/base.js'
 	export default {
 		data() {
-			let user = undefined
-			user = uni.getStorageSync('user')
-			if (user === undefined) {
-				uni.redirectTo({
-					url: '/pages/Login/Index',
-					success: (res) => {
-						console.log('首页接受数据失败返回登录界面成功', res)
-					},
-					fail(res) {
-						console.log('首页接受数据失败返回登录界面失败', res)
-					}
-				})
-			}
+			let user = {}
 			let orders = [{
 				id: 0,
 				state: 0
 			}]
+			let isLoad = {
+				window: false
+			}
 			return {
 				currentPage: 0,
 				result: '',
@@ -65,7 +61,8 @@
 				user,
 				orders,
 				stateList,
-				ordersLoading: true
+				ordersLoading: true,
+				isLoad
 			}
 		},
 		methods: {
@@ -91,30 +88,61 @@
 					title: '您暂时没有相关订单',
 					type: 'warning',
 				})
+			},
+			logout() {
+				uni.clearStorageSync()
+				uni.reLaunch({
+					url: '../Login/Index'
+				})
 			}
 		},
 		onShow() {
-			this.ordersLoading = true;
-			let that = this
-			uni.request({
-				url: baseUrl + 'order/getUserOrder',
-				method: "POST",
-				data: {
-					telephone: that.user.telephone
-				},
-				success: (res) => {
-					that.ordersLoading = false;
-					console.log('订单获取成功', res)
-					that.orders = res.data
-					uni.setStorage({
-						key: 'order',
-						data: res.data,
-						success: function() {
-							console.log('订单信息存储成功');
+			this.user = uni.getStorageSync('user')
+			if (this.user == '') {
+				uni.redirectTo({
+					url: '/pages/Login/Index',
+					success: (res) => {
+						console.log('首页接受数据失败返回登录界面成功', res)
+					},
+					fail(res) {
+						console.log('首页接受数据失败返回登录界面失败', res)
+					}
+				})
+			} else {
+				this.isLoad.window = true
+				this.ordersLoading = true;
+				let that = this
+				uni.request({
+					url: baseUrl + 'order/getUserOrder',
+					method: "POST",
+					data: {
+						telephone: that.user.telephone
+					},
+					success: (res) => {
+						console.log('订单获取成功', res)
+						for (let i = 0; i < res.data.length - 1; i++) {
+							for (let j = 0; j < res.data.length - 1 - i; j++) {
+								if (res.data[j].state > res.data[j + 1].state) {
+									let t = res.data[j + 1]
+									res.data[j + 1] = res.data[j]
+									res.data[j] = t
+								}
+							}
 						}
-					});
-				}
-			})
+						that.orders = res.data
+						uni.setStorage({
+							key: 'order',
+							data: res.data,
+							success: function() {
+								console.log('订单信息存储成功');
+							}
+						});
+					},
+					complete() {
+						that.ordersLoading = false;
+					}
+				})
+			}
 			// uni.getStorage({
 			// 	key: 'orders',
 			// 	success(res) {
@@ -143,9 +171,21 @@
 		padding: 40rpx 40rpx 0 40rpx
 	}
 
-	.hello {
+	.header {
 		height: 170rpx;
-		padding: 30rpx 40rpx
+		display: flex;
+		align-items: center;
+
+		.hello {
+			height: 170rpx;
+			padding: 30rpx 40rpx
+		}
+
+		.buttons {
+			width: 200rpx;
+			margin-left: auto;
+			margin-right: 50rpx;
+		}
 	}
 
 	.todo {

@@ -34,10 +34,10 @@
 				url: baseUrl + 'order/getCabinetOrder',
 				method: 'POST',
 				data: {
-					telephone: option.telephone,
-					location: option.location,
-					// telephone:'123456',
-					// location:'位置1'
+					// telephone: option.telephone,
+					// location: option.location,
+					telephone:'111111111',
+					location:'位置1'
 				},
 				success: (res) => {
 					console.log('开柜订单请求成功', res.data)
